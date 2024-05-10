@@ -8,7 +8,38 @@
   padding: 0 0.5rem;
 }
 
-.sampleStyle {
+.boardStyle {
+  display: flex;
+  flex-wrap: wrap;
+  width: 360px;
+  height: 360px;
+  background-color: #7f7f7f;
+}
+
+.cellStyle {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: solid;
+  border-color: white #6c6c6c #6c6c6c white;
+  border-width: 5px;
+}
+
+.innerStyle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: solid;
+  border-color: #6c6c6c;
+  border-width: 5px;
+}
+
+.bombStyle {
   width: 30px;
   height: 30px;
   background: url('~/src/assets/images/icons.png') no-repeat;
