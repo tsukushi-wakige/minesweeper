@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styles from './index.module.css';
+
 const directions = [
   [1, 0],
   [1, 1],
@@ -10,7 +11,27 @@ const directions = [
   [0, -1],
   [1, -1],
 ];
-// const putNumbers
+const putNumbers = (bombMap: number[][]) => {
+  for (let i = 0; i < 9; i++) {
+    for (let j = 0; j < 9; j++) {
+      if (bombMap[i][j] === 0) {
+        let count = 0;
+        for (const direction of directions) {
+          if (
+            bombMap[i + direction[0]] !== undefined &&
+            bombMap[i + direction[0]][j + direction[1]] === -1
+          ) {
+            count += 1;
+          }
+          bombMap[i][j] = count;
+        }
+      }
+    }
+  }
+  console.log(bombMap);
+  return bombMap;
+};
+
 const putBombs = (bombMap: number[][], x: number, y: number) => {
   const memoryPosition: number[][] = [];
   while (memoryPosition.length < 10) {
@@ -68,47 +89,49 @@ const Home = () => {
   const clickHandler = (x: number, y: number) => {
     const newBombMap = structuredClone(bombMap);
     const newBombMap2 = putBombs(newBombMap, x, y);
-    setBombMap(newBombMap2);
+    const newBombMap3 = putNumbers(newBombMap2);
+    setBombMap(newBombMap3);
   };
 
   return (
     <div className={styles.container}>
-      <div className={styles.boardStyle}>
-        {bombMap.map((row, y) =>
-          row.map((circumStance, x) => (
-            <div className={styles.cellStyle} key={`${x}-{y}`} onClick={() => clickHandler(x, y)}>
-              {circumStance === -1 && (
-                <div className={styles.bombStyle} style={{ backgroundPosition: `-300px 0px` }} />
-              )}
-              {circumStance === 1 && (
-                <div className={styles.bombStyle} style={{ backgroundPosition: `0px 0px` }} />
-              )}
-              {circumStance === 2 && (
-                <div className={styles.bombStyle} style={{ backgroundPosition: `-30px 0px` }} />
-              )}
-              {circumStance === 3 && (
-                <div className={styles.bombStyle} style={{ backgroundPosition: `-60px 0px` }} />
-              )}
-              {circumStance === 4 && (
-                <div className={styles.bombStyle} style={{ backgroundPosition: `-90px 0px` }} />
-              )}
-              {circumStance === 5 && (
-                <div className={styles.bombStyle} style={{ backgroundPosition: `-120px 0px` }} />
-              )}
-              {circumStance === 6 && (
-                <div className={styles.bombStyle} style={{ backgroundPosition: `-150px 0px` }} />
-              )}
-              {circumStance === 7 && (
-                <div className={styles.bombStyle} style={{ backgroundPosition: `-180px 0px` }} />
-              )}
-              {circumStance === 8 && (
-                <div className={styles.bombStyle} style={{ backgroundPosition: `-210px 0px` }} />
-              )}
-            </div>
-          )),
-        )}
+      <div className={styles.frameStyle}>
+        <div className={styles.boardStyle}>
+          {bombMap.map((row, y) =>
+            row.map((circumStance, x) => (
+              <div className={styles.cellStyle} key={`${x}-{y}`} onClick={() => clickHandler(x, y)}>
+                {circumStance === -1 && (
+                  <div className={styles.bombStyle} style={{ backgroundPosition: `-300px 0px` }} />
+                )}
+                {circumStance === 1 && (
+                  <div className={styles.bombStyle} style={{ backgroundPosition: `0px 0px` }} />
+                )}
+                {circumStance === 2 && (
+                  <div className={styles.bombStyle} style={{ backgroundPosition: `-30px 0px` }} />
+                )}
+                {circumStance === 3 && (
+                  <div className={styles.bombStyle} style={{ backgroundPosition: `-60px 0px` }} />
+                )}
+                {circumStance === 4 && (
+                  <div className={styles.bombStyle} style={{ backgroundPosition: `-90px 0px` }} />
+                )}
+                {circumStance === 5 && (
+                  <div className={styles.bombStyle} style={{ backgroundPosition: `-120px 0px` }} />
+                )}
+                {circumStance === 6 && (
+                  <div className={styles.bombStyle} style={{ backgroundPosition: `-150px 0px` }} />
+                )}
+                {circumStance === 7 && (
+                  <div className={styles.bombStyle} style={{ backgroundPosition: `-180px 0px` }} />
+                )}
+                {circumStance === 8 && (
+                  <div className={styles.bombStyle} style={{ backgroundPosition: `-210px 0px` }} />
+                )}
+              </div>
+            )),
+          )}
+        </div>
       </div>
-
       {/* <button onClick={() => setSamplePos((p) => (p + 1) % 14)}>sample</button> */}
     </div>
   );

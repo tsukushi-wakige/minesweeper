@@ -6,6 +6,17 @@
   height: 100vh;
   min-height: 100vh;
   padding: 0 0.5rem;
+  background-color: rgb(192 192 192);
+}
+
+.frameStyle {
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  width: 400px;
+  height: 480px;
+  background-color: #bdbdbd;
+  border-color: white #7b7b7b #7b7b7b white;
 }
 
 .boardStyle {
@@ -13,7 +24,7 @@
   flex-wrap: wrap;
   width: 360px;
   height: 360px;
-  background-color: #7f7f7f;
+  background-color: #bdbdbd;
 }
 
 .cellStyle {
@@ -24,8 +35,8 @@
   width: 40px;
   height: 40px;
   border: solid;
-  border-color: white #6c6c6c #6c6c6c white;
-  border-width: 5px;
+  border-color: white #7b7b7b #7b7b7b white;
+  border-width: 6px;
 }
 
 .innerStyle {
