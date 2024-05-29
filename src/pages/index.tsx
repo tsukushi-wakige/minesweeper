@@ -62,6 +62,11 @@ function generateRandomNumbers(): number[] {
   // 生成した乱数をリストにして返す
   return [num1, num2];
 }
+const openTheSell = (userInputs: number[][], x: number, y: number) => {
+  userInputs[x][y] = 1;
+  return userInputs;
+};
+
 const Home = () => {
   const [bombMap, setBombMap] = useState([
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -90,6 +95,9 @@ const Home = () => {
     const newBombMap = structuredClone(bombMap);
     const newBombMap2 = putBombs(newBombMap, x, y);
     const newBombMap3 = putNumbers(newBombMap2);
+    const newUserInputs = structuredClone(userInputs);
+    const newUserInputs2 = openTheSell(newUserInputs, x, y);
+    setUserInputs(newUserInputs2);
     setBombMap(newBombMap3);
   };
 
