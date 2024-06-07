@@ -39,7 +39,7 @@
   border-width: 6px;
 }
 
-.innerStyle {
+.outerStyle {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -54,4 +54,26 @@
   width: 30px;
   height: 30px;
   background: url('~/src/assets/images/icons.png') no-repeat;
+}
+
+.outerCellStyle_trash {
+  box-sizing: border-box;
+  display: flex;
+  width: 40px;
+  height: 40px;
+  border: solid;
+  border-color: white #7b7b7b #7b7b7b white;
+  border-width: 6px;
+}
+
+.outerCellStyle {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: solid;
+  border-color: white #7b7b7b #7b7b7b white;
+  border-width: 6px;
 }

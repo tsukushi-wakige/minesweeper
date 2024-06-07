@@ -14,6 +14,7 @@ const directions = [
 const putNumbers = (bombMap: number[][]) => {
   for (let i = 0; i < 9; i++) {
     for (let j = 0; j < 9; j++) {
+      console.log(i, j);
       if (bombMap[i][j] === 0) {
         let count = 0;
         for (const direction of directions) {
@@ -54,6 +55,7 @@ const putBombs = (bombMap: number[][], x: number, y: number) => {
   }
   return bombMap;
 };
+
 function generateRandomNumbers(): number[] {
   // 0〜8の範囲で乱数を生成
   const num1 = Math.floor(Math.random() * 9); // 0から8までの数を返す
