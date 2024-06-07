@@ -60,8 +60,39 @@ function generateRandomNumbers(): number[] {
   return [num1, num2];
 }
 
-const openTheCell = (userInputs: number[][], x: number, y: number) => {
-  userInputs[x][y] = 1;
+const openTheCell = (bombMap: number[][], userInputs: number[][], x: number, y: number) => {
+  if (bombMap[x][y] !== 0 && userInputs[x][y] === 0) {
+    userInputs[x][y] = 1;
+  }
+  if (bombMap[x][y] === 0 && userInputs[x][y] === 0) {
+    for (const direction of directions) {
+      userInputs[x][y] = 1;
+      if (
+        bombMap[x + direction[1]] !== undefined &&
+        bombMap[x + direction[1]][y + direction[0]] === 0
+      ) {
+        openTheCell(bombMap, userInputs, x + direction[1], y + direction[0]);
+        console.log(userInputs);
+      } else {
+        // return userInputs;
+      }
+    }
+  }
+  return userInputs;
+};
+
+const openNumber = (userInputs: number[][], bombMap: number[][]) => {
+  for (let i = 0; i < 9; i++) {
+    for (let j = 0; j < 9; j++) {
+      if (userInputs[i][j] === 1 && bombMap[i][j] === 0) {
+        for (const direction of directions) {
+          if (userInputs[i + direction[1]] !== undefined) {
+            userInputs[i + direction[1]][j + direction[0]] = 1;
+          }
+        }
+      }
+    }
+  }
   return userInputs;
 };
 
@@ -78,29 +109,42 @@ const Home = () => {
   );
   const [initialized, setInitialized] = useState<boolean>(false);
 
+  let a = structuredClone(bombMap);
+
   const clickHandler = (x: number, y: number) => {
     if (!initialized) {
       const newBombMap = putBombs(structuredClone(bombMap), x, y);
       const completeBombMap = putNumbers(newBombMap);
+      a = completeBombMap;
       setBombMap(completeBombMap);
       setInitialized(true);
     }
     const newUserInputs = structuredClone(userInputs);
-    const newUserInputs2 = openTheCell(newUserInputs, x, y);
-    setUserInputs(newUserInputs2);
+    const newUserInputs2 = openTheCell(a, newUserInputs, x, y);
+    const newUserInputs3 = openNumber(newUserInputs2, a);
+    setUserInputs(newUserInputs3);
+  };
+
+  const rightClickHandler = (e: React.MouseEvent, x: number, y: number) => {
+    e.preventDefault();
+    const newUserInputs = structuredClone(userInputs);
+    newUserInputs[x][y] = (newUserInputs[x][y] + 2) % 4; // 0->2->3->0のループ
+    setUserInputs(newUserInputs);
   };
 
   return (
     <div className={styles.container}>
       <div className={styles.frameStyle}>
         <div className={styles.boardStyle}>
-          {bombMap.map((row, y) =>
-            row.map((cell, x) => (
+          {bombMap.map((row, x) =>
+            row.map((cell, y) => (
               <div
-                className={styles.cellStyle}
+                className={styles.cellBottom}
                 key={`${x}-${y}`}
                 onClick={() => clickHandler(x, y)}
+                onContextMenu={(e) => rightClickHandler(e, x, y)}
               >
+                {userInputs[x][y] === 0 && <div className={styles.cellStyle} />}
                 {userInputs[x][y] === 1 &&
                   (cell === -1 ? (
                     <div
@@ -115,6 +159,15 @@ const Home = () => {
                       />
                     )
                   ))}
+                {userInputs[x][y] === 2 && (
+                  <div className={styles.flagStyle} style={{ backgroundPosition: `-300` }} />
+                )}
+                {userInputs[x][y] === 3 && (
+                  <div
+                    className={styles.questionMarkStyle}
+                    style={{ backgroundPosition: `-330` }}
+                  />
+                )}
               </div>
             )),
           )}
