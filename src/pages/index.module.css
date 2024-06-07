@@ -14,8 +14,12 @@
   display: flex;
   flex-wrap: wrap;
   width: 400px;
-  height: 480px;
+  height: 500px;
+  padding-top: 20px;
+  padding-left: 20px;
+  margin-bottom: 10px;
   background-color: #bdbdbd;
+  border: solid;
   border-color: white #7b7b7b #7b7b7b white;
 }
 
@@ -83,11 +87,36 @@
 }
 
 .flagStyle {
-  background-image: url('~/src/assets/images/icons.png');
+  width: 30px;
+  height: 30px;
+  background: url('~/src/assets/images/icons.png');
   background-size: cover;
 }
 
 .questionMarkStyle {
-  background-image: url('~/src/assets/images/icons.png');
+  width: 30px;
+  height: 30px;
+  background: url('~/src/assets/images/icons.png');
   background-size: cover;
+}
+
+.boxStyle {
+  box-sizing: border-box;
+  width: 360px;
+  height: 80px;
+  border: solid;
+  border-color: white #7b7b7b #7b7b7b white;
+}
+
+.button {
+  color: white;
+  cursor: pointer;
+  background-color: black;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.1s;
+}
+
+.button:active {
+  background-color: white;
 }
