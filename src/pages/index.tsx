@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import styles from './index.module.css';
-import { title } from 'process';
 
 const directions = [
   [1, 0],
@@ -74,8 +73,6 @@ const openTheCell = (bombMap: number[][], userInputs: number[][], x: number, y: 
       ) {
         openTheCell(bombMap, userInputs, x + direction[1], y + direction[0]);
         console.log(userInputs);
-      } else {
-        // return userInputs;
       }
     }
   }
@@ -95,6 +92,33 @@ const openNumber = (userInputs: number[][], bombMap: number[][]) => {
     }
   }
   return userInputs;
+};
+
+const boom = (bombMap: number[][], userInputs: number[][], x: number, y: number) => {
+  if (bombMap[x][y] === -1) {
+    for (let i = 0; i < 9; i++) {
+      for (let j = 0; j < 9; j++) {
+        if (bombMap[i][j] === -1) {
+          userInputs[i][j] = 1;
+        }
+      }
+    }
+    userInputs[x][y] = 1;
+  }
+  return userInputs;
+};
+const gameOver = (bombMap: number[][], userInputs: number[][]) => {
+  let isGameOver = false;
+  for (let i = 0; i < 9; i++) {
+    for (let j = 0; j < 9; j++) {
+      if (bombMap[i][j] === -1 && userInputs[i][j] === 1) {
+        isGameOver = true;
+        console.log(isGameOver);
+        return isGameOver;
+      }
+    }
+  }
+  return isGameOver;
 };
 
 const Home = () => {
@@ -127,74 +151,113 @@ const Home = () => {
   const clickHandler = (x: number, y: number) => {
     if (!initialized) {
       const newBombMap = putBombs(structuredClone(bombMap), x, y);
+      setBombMap(newBombMap);
       const completeBombMap = putNumbers(newBombMap);
       a = completeBombMap;
       setBombMap(completeBombMap);
       setInitialized(true);
     }
-    const newUserInputs = structuredClone(userInputs);
-    const newUserInputs2 = openTheCell(a, newUserInputs, x, y);
-    const newUserInputs3 = openNumber(newUserInputs2, a);
-
-    setUserInputs(newUserInputs3);
+    if (gameOver(bombMap, userInputs) === false) {
+      const newUserInputs = structuredClone(userInputs);
+      const newUserInputs2 = openTheCell(a, newUserInputs, x, y);
+      const newUserInputs3 = openNumber(newUserInputs2, a);
+      const newUserInputs4 = boom(a, newUserInputs3, x, y);
+      setUserInputs(newUserInputs4);
+    }
   };
 
   const rightClickHandler = (e: React.MouseEvent, x: number, y: number) => {
-    e.preventDefault();
-    const newUserInputs = structuredClone(userInputs);
-    newUserInputs[x][y] = (newUserInputs[x][y] + 2) % 6; // 0->2->3->0のループ
-    setUserInputs(newUserInputs);
+    if (userInputs[x][y] !== 1) {
+      e.preventDefault();
+      const newUserInputs = structuredClone(userInputs);
+      newUserInputs[x][y] = (newUserInputs[x][y] + 2) % 6; // 0->2->3->0のループ
+      setUserInputs(newUserInputs);
+    }
+  };
+
+  const reset = () => {
+    setBombMap([
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ]);
+    setUserInputs([
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ]);
+    setInitialized(false);
   };
 
   return (
     <div className={styles.container}>
       <div className={styles.frameStyle}>
         <div className={styles.boxStyle}>
-          <div className={styles.button} />
-          <div className={styles.boardStyle}>
-            {bombMap.map((row, x) =>
-              row.map((cell, y) => (
-                <div
-                  className={styles.cellBottom}
-                  key={`${x}-${y}`}
-                  onClick={() => clickHandler(x, y)}
-                  onContextMenu={(e) => rightClickHandler(e, x, y)}
-                >
-                  {userInputs[x][y] === 0 && <div className={styles.cellStyle} />}
-                  {userInputs[x][y] === 1 &&
-                    (cell === -1 ? (
+          <div className={styles.leftStyle}>
+            {10 - userInputs.flat().filter((cell) => cell === 2).length}
+          </div>
+          <div
+            className={styles.button}
+            style={{ backgroundPosition: `-330px 0px` }}
+            onClick={reset}
+          />
+          <div className={styles.timerStyle} />
+        </div>
+        <div className={styles.boardStyle}>
+          {bombMap.map((row, x) =>
+            row.map((cell, y) => (
+              <div
+                className={styles.cellBottom}
+                key={`${x}-${y}`}
+                onClick={() => clickHandler(x, y)}
+                onContextMenu={(e) => rightClickHandler(e, x, y)}
+              >
+                {userInputs[x][y] === 0 && <div className={styles.cellStyle} />}
+                {userInputs[x][y] === 1 &&
+                  (cell === -1 ? (
+                    <div
+                      className={styles.bombStyle}
+                      style={{ backgroundPosition: `-300px 0px` }}
+                    />
+                  ) : (
+                    cell !== 0 && (
                       <div
                         className={styles.bombStyle}
-                        style={{ backgroundPosition: `-300px 0px` }}
+                        style={{ backgroundPosition: `${-30 * (cell - 1)}px 0px` }}
                       />
-                    ) : (
-                      cell !== 0 && (
-                        <div
-                          className={styles.bombStyle}
-                          style={{ backgroundPosition: `${-30 * (cell - 1)}px 0px` }}
-                        />
-                      )
-                    ))}
-                  {userInputs[x][y] === 2 && (
-                    <div className={styles.cellStyle}>
-                      <div
-                        className={styles.flagStyle}
-                        style={{ backgroundPosition: `-269px 0px` }}
-                      />
-                    </div>
-                  )}
-                  {userInputs[x][y] === 4 && (
-                    <div className={styles.cellStyle}>
-                      <div
-                        className={styles.questionMarkStyle}
-                        style={{ backgroundPosition: `-240px 0px` }}
-                      />
-                    </div>
-                  )}
-                </div>
-              )),
-            )}
-          </div>
+                    )
+                  ))}
+                {userInputs[x][y] === 2 && (
+                  <div className={styles.cellStyle}>
+                    <div
+                      className={styles.flagStyle}
+                      style={{ backgroundPosition: `-269px 0px` }}
+                    />
+                  </div>
+                )}
+                {userInputs[x][y] === 4 && (
+                  <div className={styles.cellStyle}>
+                    <div
+                      className={styles.questionMarkStyle}
+                      style={{ backgroundPosition: `-240px 0px` }}
+                    />
+                  </div>
+                )}
+              </div>
+            )),
+          )}
         </div>
       </div>
     </div>
